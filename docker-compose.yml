@@ -1,0 +1,24 @@
+services:
+  backend:
+    build: ./backend
+    container_name: mcf-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app  # 挂载根目录，确保代码落盘到宿主机
+      - /app/backend/node_modules # 防止覆盖
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: mcf-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules # 保护容器内的 node_modules
+    depends_on:
+      - backend
+    restart: unless-stopped
